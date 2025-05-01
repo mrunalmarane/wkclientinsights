@@ -1,0 +1,50 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "API Documentation",
+		"description": "API documentation for the application",
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:8080",
+			"description": "Generated server url"
+		}
+	],
+	"paths": {
+		"/clientData": {
+			"get": {
+				"tags": [
+					"client-controller"
+				],
+				"summary": "Fetch client data by client ID",
+				"operationId": "getClientData",
+				"parameters": [
+					{
+						"name": "clientId",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {}
+	}
+}
