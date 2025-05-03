@@ -23,6 +23,11 @@ public class ClientController {
     @Autowired
     private ClientDetailsService clientDetailsService;
 
+    @GetMapping (value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getHelloWorld() {
+        return "Hello";
+    }
+
     @Operation(summary = "Fetch client data by client ID")
     @GetMapping (value = "/clientData", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getClientData(@RequestParam String clientId) {
