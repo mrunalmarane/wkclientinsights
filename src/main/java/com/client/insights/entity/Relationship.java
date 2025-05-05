@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "relationship", schema = "cpm")
+@Table(name = "relationship", schema = "azure_pg_admin")
 public class Relationship {
     @Id
     @Column(name = "rowid", nullable = false)
