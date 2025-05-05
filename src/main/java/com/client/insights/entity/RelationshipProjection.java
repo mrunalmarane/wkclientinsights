@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "relationshipprojection", schema = "azure_pg_admin")
+@Table(name = "relationshipprojection", schema = "cpm")
 public class RelationshipProjection {
     @Id
     @Column(name = "rowid", nullable = false)
