@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "contactprojection", schema = "cpm")
+@Table(name = "contactprojection", schema = "azure_pg_admin")
 @Where(clause = "tenantId = '6660c87c-3b88-4e81-aa51-1c3b01b03842'")
 public class ContactProjection {
     @Id
