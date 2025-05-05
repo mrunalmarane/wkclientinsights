@@ -14,7 +14,7 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy the built JAR file from the build stage
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/insights-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the application port
 EXPOSE 8080
