@@ -13,7 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>insights</name>
     <description>insights</description>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <url/>
     <licenses>
         <license/>
