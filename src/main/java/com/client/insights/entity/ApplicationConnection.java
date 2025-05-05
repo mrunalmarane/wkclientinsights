@@ -10,7 +10,7 @@ import org.hibernate.annotations.Where;
 import java.util.UUID;
 
 @Entity
-@Table(name = "applicationconnection", schema = "azure_pg_admin")
+@Table(name = "applicationconnection", schema = "cpm")
 @Where(clause = "tenantId = '6660c87c-3b88-4e81-aa51-1c3b01b03842'")
 public class ApplicationConnection {
     @Id
