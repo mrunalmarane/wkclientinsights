@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "relationshiptypegroup", schema = "azure_pg_admin")
+@Table(name = "relationshiptypegroup", schema = "cpm")
 public class RelationshipTypeGroup {
     @Id
     @Column(name = "rowid", nullable = false)
