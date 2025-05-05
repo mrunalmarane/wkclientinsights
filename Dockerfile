@@ -16,7 +16,7 @@ WORKDIR /app
 ARG JAR_FILE=/app/target/*.jar
 
 # Copy the built JAR file from the build stage
-COPY --from=build /app/target/insights-1.0.0.jar app.jar
+COPY /app/target/insights-1.0.0.jar app.jar
 
 # Expose the application port
 EXPOSE 8080
