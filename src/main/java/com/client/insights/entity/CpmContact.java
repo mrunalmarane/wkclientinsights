@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Entity
-@Table(name = "cpm_contact", schema = "cpm")
+@Table(name = "cpm_contact", schema = "azure_pg_admin")
 @Where(clause = "tenantId = '6660c87c-3b88-4e81-aa51-1c3b01b03842'")
 public class CpmContact {
     @Id
