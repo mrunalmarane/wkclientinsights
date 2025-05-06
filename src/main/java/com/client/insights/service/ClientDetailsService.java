@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -152,8 +153,14 @@ public class ClientDetailsService {
     }
 
     public ClientAllDetailsResponse getDetailsForClient(String contactId) {
+        UUID contactIdUUID = null;
+        if(Objects.equals(contactId, "123")) {
+            contactIdUUID = UUID.fromString("0382bec3-49d3-49d9-94c7-32a8ab3f224d");
+        } else if (Objects.equals(contactId, "456")) {
+            contactIdUUID = UUID.fromString("f12f4838-ade5-4f0b-86f0-d13c822ecbc7");
+        }
 
-        UUID contactIdUUID = UUID.fromString(contactId);
+        //UUID contactIdUUID = UUID.fromString(contactId);
         Optional<CpmContact> contact = contactRepository.findById(contactIdUUID);
         if (contact.isPresent()) {
             System.out.println("Contact found: " + contact.get());
