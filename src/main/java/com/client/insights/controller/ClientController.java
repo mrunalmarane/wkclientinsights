@@ -2,6 +2,7 @@ package com.client.insights.controller;
 
 
 import com.client.insights.Exception.ClientNotFoundException;
+import com.client.insights.dto.ApplicationConnectionDto;
 import com.client.insights.dto.ClientTeamProjectionDto;
 import com.client.insights.dto.ContactProjectionDto;
 import com.client.insights.dto.CpmContactDto;
@@ -30,14 +31,14 @@ public class ClientController {
     private ClientDetailsService clientDetailsService;
 
     @Operation(summary = "Fetch client data by client ID")
-    @GetMapping (value = "/clientData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CpmContactDto> getClientData(@RequestParam String clientId) {
+    @GetMapping (value = "/byContactCode", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<CpmContactDto> getClientData(@RequestParam String contactCode) {
         // Logic to fetch client data based on the clientId
-        if (clientId == null || clientId.isEmpty()) {
+        if (contactCode == null || contactCode.isEmpty()) {
             throw new ClientNotFoundException("Client ID not found");
         }
-        System.out.println("Fetching data for client ID: " + clientId);
-        return clientDetailsService.getClientDetailsByContactCode(clientId);
+        System.out.println("Fetching data for client ID: " + contactCode);
+        return clientDetailsService.getClientDetailsByContactCode(contactCode);
     }
 
     @Operation(summary = "Fetch client data and all related data by client ID")
@@ -60,7 +61,7 @@ public class ClientController {
 
 
     @Operation(summary = "Fetch clients by company name")
-    @GetMapping (value = "/clientsByCompanyName", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping (value = "/byCompanyName", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ContactProjectionDto>> getClientDetailsByCompanyName(@RequestParam String companyName) {
         // Logic to fetch client data based on the clientId
         if (companyName == null || companyName.isEmpty()) {
@@ -72,7 +73,7 @@ public class ClientController {
     }
 
     @Operation(summary = "Fetch clients by client team member name")
-    @GetMapping (value = "/clientsByClientTeamMember", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping (value = "/byClientTeamMember", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ClientTeamProjectionDto>> getClientDetailsByClientTeamMemberName(@RequestParam String clientTeamMember) {
         // Logic to fetch client data based on the clientId
         if (clientTeamMember == null || clientTeamMember.isEmpty()) {
@@ -84,7 +85,7 @@ public class ClientController {
     }
 
     @Operation(summary = "Fetch clients by client team member name")
-    @GetMapping (value = "/clientsByTeamMemberAndRole", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping (value = "/byTeamMemberAndRole", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ClientTeamProjectionDto>> getClientDetailsByClientTeamMemberNameAndRoleName(@RequestParam String clientTeamMember, @RequestParam String roleName) {
         // Logic to fetch client data based on the clientId
         if ((clientTeamMember == null || clientTeamMember.isEmpty()) && (roleName == null || roleName.isEmpty())) {
@@ -96,19 +97,19 @@ public class ClientController {
     }
 
     @Operation(summary = "Fetch clients by connected application name")
-    @GetMapping (value = "/clientsByConnectedApplication", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ApplicationConnection>> getClientDetailsByConnectedApplication(@RequestParam String applicationName) {
+    @GetMapping (value = "/byConnectedApplicationName", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ApplicationConnectionDto>> getClientDetailsByConnectedApplication(@RequestParam String applicationName) {
         // Logic to fetch client data based on the clientId
         if (applicationName == null || applicationName.isEmpty()) {
             throw new ClientNotFoundException("Not found");
         }
         System.out.println("Fetching clients for application name: " + applicationName);
-        List<ApplicationConnection> clientDetailsByConnectedApplication = clientDetailsService.getClientDetailsByConnectedApplication(applicationName);
+        List<ApplicationConnectionDto> clientDetailsByConnectedApplication = clientDetailsService.getClientDetailsByConnectedApplication(applicationName);
         return ResponseEntity.ok(clientDetailsByConnectedApplication);
     }
 
     @Operation(summary = "Fetch clients by relationships")
-    @GetMapping (value = "/clientsByRelationshipName", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping (value = "/byRelationshipName", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RelationshipProjection>> getClientDetailsByRelationshipName(@RequestParam String relationshipName) {
         // Logic to fetch client data based on the clientId
         if (relationshipName == null || relationshipName.isEmpty()) {

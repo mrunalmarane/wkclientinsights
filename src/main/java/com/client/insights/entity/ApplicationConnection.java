@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
 
@@ -40,6 +41,12 @@ public class ApplicationConnection {
 
     @Column(name = "version")
     private Integer version;
+
+    @Transient
+    private String contactCode;
+
+    @Transient
+    private String clientName;
 
     public UUID getRowId() {
         return rowId;
@@ -111,5 +118,21 @@ public class ApplicationConnection {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getContactCode() {
+        return contactCode;
+    }
+
+    public void setContactCode(String contactCode) {
+        this.contactCode = contactCode;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

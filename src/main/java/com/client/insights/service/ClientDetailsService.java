@@ -1,6 +1,7 @@
 package com.client.insights.service;
 
 import com.client.insights.FABService;
+import com.client.insights.dto.ApplicationConnectionDto;
 import com.client.insights.dto.ClientTeamProjectionDto;
 import com.client.insights.dto.ContactProjectionDto;
 import com.client.insights.dto.CpmContactDto;
@@ -10,6 +11,7 @@ import com.client.insights.entity.ContactProjection;
 import com.client.insights.entity.CpmContact;
 import com.client.insights.entity.EmployeeProjection;
 import com.client.insights.entity.RelationshipProjection;
+import com.client.insights.mapper.ApplicationConnectionDtoMapper;
 import com.client.insights.mapper.ClientTeamProjectionDtoMapper;
 import com.client.insights.mapper.ContactProjectionDtoMapper;
 import com.client.insights.mapper.CpmContactDtoMapper;
@@ -63,6 +65,9 @@ public class ClientDetailsService {
     @Autowired
     private ClientTeamProjectionDtoMapper clientTeamProjectionDtoMapper;
 
+    @Autowired
+    private ApplicationConnectionDtoMapper appConnectionDtoMapper;
+
     public static final UUID ADDISON = UUID.fromString("5aefeb06-bcb2-43b3-9c79-c4f14588e02e");
     public static final UUID AKTE = UUID.fromString("b95e5aa6-8d2f-4225-8b47-b2cd03f0ed91");
 
@@ -78,10 +83,13 @@ public class ClientDetailsService {
             String companyName = "Klimbim";
             List<ContactProjectionDto> companyNameDetails = getClientDetailsByCompanyName(companyName);*/
 
-            String clientTeamMemberName = "Anna";
-            List<ClientTeamProjectionDto> clientTeamMemberList = getClientDetailsByClientTeamMember(clientTeamMemberName);
+            /*String clientTeamMemberName = "Anna";
+            List<ClientTeamProjectionDto> clientTeamMemberList = getClientDetailsByClientTeamMember(clientTeamMemberName);*/
 
-            fileService.exportToExcel(clientTeamMemberList, CpmContactDto.headers, ClientTeamProjectionDto.class);
+            String applicationName = "Addison";
+            List<ApplicationConnectionDto> clientTeamMemberRoleList = getClientDetailsByConnectedApplication(applicationName);
+
+            fileService.exportToExcel(clientTeamMemberRoleList, ApplicationConnectionDto.headers, ApplicationConnectionDto.class);
 
             // Write the response to an Excel file
             //fileService.exportToExcel(companyNameDetails, ContactProjectionDto.headers, ContactProjectionDto.class);
@@ -119,14 +127,24 @@ public class ClientDetailsService {
         return clientTeamProjectionDtoMapper.toDtoList(projectionList);
     }
 
-    public List<ApplicationConnection> getClientDetailsByConnectedApplication(String applicationName) {
+    public List<ApplicationConnectionDto> getClientDetailsByConnectedApplication(String applicationName) {
         UUID applicationId = null;
         if (applicationName.compareToIgnoreCase("Addison") == 0) {
             applicationId = ADDISON;
         } else if (applicationName.compareToIgnoreCase("Akte") == 0) {
             applicationId = AKTE;
         }
-        return applicationConnectionRepository.findAllByConnectedApplicationIdAndIsDeletedFalse(applicationId);
+        List<ApplicationConnection> connectedApplicationList = applicationConnectionRepository.findAllByConnectedApplicationIdAndIsDeletedFalse(applicationId);
+        // Manually map additional fields
+        connectedApplicationList.forEach(app -> {
+            contactRepository.findById(app.getClientId()).ifPresent(contact -> {
+                app.setName(applicationName);
+                app.setClientName(contact.getCompanyNameOrPersonName());
+                app.setContactCode(contact.getContactCode());
+            });
+        });
+
+        return appConnectionDtoMapper.toDtoList(connectedApplicationList);
     }
 
     public List<RelationshipProjection> getClientDetailsByRelationshipName(String relationshipName) {
