@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface RelationshipProjectionRepository extends JpaRepository<RelationshipProjection, UUID> {
      List<RelationshipProjection> findByAliasContainingIgnoreCase(String alias);
+
+     List<RelationshipProjection> findByViewerContactId(UUID viewerContactId);
 }

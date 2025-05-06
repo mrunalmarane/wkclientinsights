@@ -8,4 +8,7 @@ import java.util.UUID;
 
 public interface ApplicationConnectionRepository extends JpaRepository<ApplicationConnection, UUID> {
     List<ApplicationConnection> findAllByConnectedApplicationIdAndIsDeletedFalse(UUID connectedApplicationId);
+
+    List<ApplicationConnection> findAllByClientId(UUID clientId);
+
 }

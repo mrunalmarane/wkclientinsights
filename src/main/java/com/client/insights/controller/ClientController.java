@@ -7,8 +7,11 @@ import com.client.insights.dto.ContactProjectionDto;
 import com.client.insights.dto.CpmContactDto;
 import com.client.insights.entity.ApplicationConnection;
 import com.client.insights.entity.RelationshipProjection;
+import com.client.insights.response.ClientAllDetailsResponse;
 import com.client.insights.service.ClientDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import java.util.List;
 
 @RestController
 public class ClientController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
     @Autowired
     private ClientDetailsService clientDetailsService;
@@ -34,6 +39,25 @@ public class ClientController {
         System.out.println("Fetching data for client ID: " + clientId);
         return clientDetailsService.getClientDetailsByContactCode(clientId);
     }
+
+    @Operation(summary = "Fetch client data and all related data by client ID")
+    @GetMapping (value = "/clientDetailedDataById")
+    public ClientAllDetailsResponse getClientDetailedDataById(@RequestParam String clientId) {
+        // Logic to fetch client data based on the clientId
+        try {
+            if (clientId == null || clientId.isEmpty()) {
+                throw new ClientNotFoundException("Client ID not found");
+            }
+            System.out.println("Fetching data for client ID and also all related data for that client: " + clientId);
+            return clientDetailsService.getDetailsForClient(clientId);
+        } catch (Exception e){
+            System.out.println("Error occurred while fetching client data: " + e.getMessage());
+            logger.error(e.getMessage());
+            logger.error("Error occurred while fetching client data: ", e);
+        }
+        return null;
+    }
+
 
     @Operation(summary = "Fetch clients by company name")
     @GetMapping (value = "/clientsByCompanyName", produces = MediaType.APPLICATION_JSON_VALUE)

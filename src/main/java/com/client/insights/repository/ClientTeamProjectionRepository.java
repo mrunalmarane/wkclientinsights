@@ -15,6 +15,8 @@ public interface ClientTeamProjectionRepository extends JpaRepository<ClientTeam
 
     List<ClientTeamProjection> findByEmployeeNameContainingIgnoreCaseOrEmployeeAliasIsContainingIgnoreCaseAndRoleNameIsContaining(String employeeName, String employeeAlias, String roleName);
 
+    List<ClientTeamProjection> findByClientId(UUID clientId);
+
     @Query("""
     SELECT c FROM ClientTeamProjection c
     WHERE 

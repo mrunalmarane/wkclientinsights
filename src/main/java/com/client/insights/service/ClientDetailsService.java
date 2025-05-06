@@ -19,10 +19,12 @@ import com.client.insights.repository.ContactProjectionRepository;
 import com.client.insights.repository.CpmContactRepository;
 import com.client.insights.repository.EmployeeProjectionRepository;
 import com.client.insights.repository.RelationshipProjectionRepository;
+import com.client.insights.response.ClientAllDetailsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -129,6 +131,29 @@ public class ClientDetailsService {
 
     public List<RelationshipProjection> getClientDetailsByRelationshipName(String relationshipName) {
         return relationshipProjectionRepository.findByAliasContainingIgnoreCase(relationshipName);//TODO
+    }
+
+    public ClientAllDetailsResponse getDetailsForClient(String contactId) {
+
+        UUID contactIdUUID = UUID.fromString(contactId);
+        Optional<CpmContact> contact = contactRepository.findById(contactIdUUID);
+        if (contact.isPresent()) {
+            System.out.println("Contact found: " + contact.get());
+        } else {
+            System.out.println("Contact not found");
+        }
+
+        List<ClientTeamProjection> clientTeamProjections = clientTeamProjectionRepository.findByClientId(contactIdUUID);
+        List<ApplicationConnection> applicationConnections = applicationConnectionRepository.findAllByClientId(contactIdUUID);
+        List<RelationshipProjection> relationshipProjections = relationshipProjectionRepository.findByViewerContactId(contactIdUUID);
+
+        ClientAllDetailsResponse response = new ClientAllDetailsResponse();
+        response.setApplicationConnection(applicationConnections);
+        response.setClientTeamProjection(clientTeamProjections);
+        response.setCpmContact(contact.get());
+        response.setRelationship(relationshipProjections);
+
+        return response;
     }
 
 }
