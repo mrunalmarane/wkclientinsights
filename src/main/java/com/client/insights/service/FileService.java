@@ -289,6 +289,12 @@ public class FileService {
         for (int i = 0; i < headers.size(); i++) {
             sheet.autoSizeColumn(i);
         }
+         // Delete the file if it already exists
+        File file = new File(excelFilePath);
+        if (file.exists()) {
+            file.delete();
+        }
+        // Create a new FileOutputStream to overwrite the file
 
         try (FileOutputStream outputStream = new FileOutputStream(excelFilePath)) {
             workbook.write(outputStream);
