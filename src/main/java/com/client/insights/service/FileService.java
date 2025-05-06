@@ -310,4 +310,26 @@ public class FileService {
         }
     }
 
+    public void writeCsvToExcel(String csv) throws IOException {
+        String[] lines = csv.split("\n");
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("CSV Data");
+
+        for (int i = 0; i < lines.length; i++) {
+            Row row = sheet.createRow(i);
+            String[] cells = lines[i].split(",");
+            for (int j = 0; j < cells.length; j++) {
+                row.createCell(j).setCellValue(cells[j].trim());
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+            workbook.write(fos);
+        }
+
+        workbook.close();
+        System.out.println("Excel file written successfully.");
+    }
+
 }

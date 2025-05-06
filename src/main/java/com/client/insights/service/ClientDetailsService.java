@@ -22,9 +22,13 @@ import com.client.insights.repository.CpmContactRepository;
 import com.client.insights.repository.EmployeeProjectionRepository;
 import com.client.insights.repository.RelationshipProjectionRepository;
 import com.client.insights.response.ClientAllDetailsResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,30 +80,31 @@ public class ClientDetailsService {
         StringBuilder aiResponse = new StringBuilder("");//fabService.execute(prompt);
         if (aiResponse != null) {
             // Process the response as needed
-            System.out.println("Fetched AI Response: " + aiResponse);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = null;
+            try {
+                rootNode = objectMapper.readTree(String.valueOf(aiResponse));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
 
-            /*String contactCode = "10005";
-            List<CpmContactDto> clientCodeDetails = getClientDetailsByContactCode(contactCode);
+            String content = rootNode.path("output").path("payload").path("content").asText();
 
-            String companyName = "Klimbim";
-            List<ContactProjectionDto> companyNameDetails = getClientDetailsByCompanyName(companyName);*/
+            String csv = extractCsvFromJson(content);
+            try {
+                fileService.writeCsvToExcel(csv);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-            /*String clientTeamMemberName = "Anna";
-            List<ClientTeamProjectionDto> clientTeamMemberList = getClientDetailsByClientTeamMember(clientTeamMemberName);*/
 
-            String applicationName = "Addison";
-            List<ApplicationConnectionDto> clientTeamMemberRoleList = getClientDetailsByConnectedApplication(applicationName);
-
-            fileService.exportToExcel(clientTeamMemberRoleList, ApplicationConnectionDto.headers, ApplicationConnectionDto.class);
-
-            // Write the response to an Excel file
-            //fileService.exportToExcel(companyNameDetails, ContactProjectionDto.headers, ContactProjectionDto.class);
-
-            // Write the response to a PDF file
-            //fileService.writeResponseToPdf(aiResponse.toString());
         } else {
             System.out.println("Failed to fetch API response.");
         }
+    }
+
+    private static String extractCsvFromJson(String json) {
+        return json.replaceAll("\\\\n", "\n").replaceAll("\\\\\"", "\"").trim();
     }
 
     public List<CpmContactDto> getClientDetailsByContactCode(String contactCode) {
