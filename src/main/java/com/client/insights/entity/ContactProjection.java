@@ -8,12 +8,10 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "contactprojection", schema = "cpm")
-@Where(clause = "tenantId = '6660c87c-3b88-4e81-aa51-1c3b01b03842'")
 public class ContactProjection {
     @Id
     @Column(name = "rowid", nullable = false)
@@ -63,9 +61,6 @@ public class ContactProjection {
 
     @Column(name = "displayname", length = 1285)
     private String displayName;
-
-    @Column(name = "servicetypelist")
-    private List<UUID> serviceTypeList;
 
     @Column(name = "contactprofession")
     private String contactProfession;
@@ -230,14 +225,6 @@ public class ContactProjection {
 
     public void setDisplayName(String displayname) {
         this.displayName = displayname;
-    }
-
-    public List<UUID> getServiceTypeList() {
-        return serviceTypeList;
-    }
-
-    public void setServiceTypeList(List<UUID> servicetypelist) {
-        this.serviceTypeList = servicetypelist;
     }
 
     public String getContactProfession() {

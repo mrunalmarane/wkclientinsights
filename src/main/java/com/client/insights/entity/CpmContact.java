@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Where;
 import org.hibernate.type.SqlTypes;
@@ -115,6 +116,9 @@ public class CpmContact {
 
     @Column(name = "state")
     private Integer state;
+
+    @Transient
+    private String responsibleEmployeeName;
 
     public UUID getRowId() {
         return rowId;
@@ -378,6 +382,14 @@ public class CpmContact {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public String getResponsibleEmployeeName() {
+        return responsibleEmployeeName;
+    }
+
+    public void setResponsibleEmployeeName(String responsibleEmployeeName) {
+        this.responsibleEmployeeName = responsibleEmployeeName;
     }
 
 }

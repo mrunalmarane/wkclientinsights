@@ -2,9 +2,10 @@ package com.client.insights.controller;
 
 
 import com.client.insights.Exception.ClientNotFoundException;
+import com.client.insights.dto.ClientTeamProjectionDto;
+import com.client.insights.dto.ContactProjectionDto;
+import com.client.insights.dto.CpmContactDto;
 import com.client.insights.entity.ApplicationConnection;
-import com.client.insights.entity.ClientTeamProjection;
-import com.client.insights.entity.ContactProjection;
 import com.client.insights.entity.RelationshipProjection;
 import com.client.insights.service.ClientDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,56 +24,50 @@ public class ClientController {
     @Autowired
     private ClientDetailsService clientDetailsService;
 
-    @GetMapping (value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getHelloWorld() {
-        return "Hello";
-    }
-
     @Operation(summary = "Fetch client data by client ID")
     @GetMapping (value = "/clientData", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getClientData(@RequestParam String clientId) {
+    public List<CpmContactDto> getClientData(@RequestParam String clientId) {
         // Logic to fetch client data based on the clientId
         if (clientId == null || clientId.isEmpty()) {
             throw new ClientNotFoundException("Client ID not found");
         }
         System.out.println("Fetching data for client ID: " + clientId);
-        clientDetailsService.getClientDetailsByContactCode(clientId);
-        return "Hello";
+        return clientDetailsService.getClientDetailsByContactCode(clientId);
     }
 
     @Operation(summary = "Fetch clients by company name")
     @GetMapping (value = "/clientsByCompanyName", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ContactProjection>> getClientDetailsByCompanyName(@RequestParam String companyName) {
+    public ResponseEntity<List<ContactProjectionDto>> getClientDetailsByCompanyName(@RequestParam String companyName) {
         // Logic to fetch client data based on the clientId
         if (companyName == null || companyName.isEmpty()) {
             throw new ClientNotFoundException("Not found");
         }
         System.out.println("Fetching clients for company name: " + companyName);
-        List<ContactProjection> clientDetailsByCompanyName = clientDetailsService.getClientDetailsByCompanyName(companyName);
+        List<ContactProjectionDto> clientDetailsByCompanyName = clientDetailsService.getClientDetailsByCompanyName(companyName);
         return ResponseEntity.ok(clientDetailsByCompanyName);
     }
 
     @Operation(summary = "Fetch clients by client team member name")
     @GetMapping (value = "/clientsByClientTeamMember", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ClientTeamProjection>> getClientDetailsByClientTeamMemberName(@RequestParam String clientTeamMember) {
+    public ResponseEntity<List<ClientTeamProjectionDto>> getClientDetailsByClientTeamMemberName(@RequestParam String clientTeamMember) {
         // Logic to fetch client data based on the clientId
         if (clientTeamMember == null || clientTeamMember.isEmpty()) {
             throw new ClientNotFoundException("Not found");
         }
         System.out.println("Fetching clients for client team member name: " + clientTeamMember);
-        List<ClientTeamProjection> clientDetailsByClientTeamMember = clientDetailsService.getClientDetailsByClientTeamMember(clientTeamMember);
+        List<ClientTeamProjectionDto> clientDetailsByClientTeamMember = clientDetailsService.getClientDetailsByClientTeamMember(clientTeamMember);
         return ResponseEntity.ok(clientDetailsByClientTeamMember);
     }
 
     @Operation(summary = "Fetch clients by client team member name")
     @GetMapping (value = "/clientsByTeamMemberAndRole", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ClientTeamProjection>> getClientDetailsByClientTeamMemberNameAndRoleName(@RequestParam String clientTeamMember, @RequestParam String roleName) {
+    public ResponseEntity<List<ClientTeamProjectionDto>> getClientDetailsByClientTeamMemberNameAndRoleName(@RequestParam String clientTeamMember, @RequestParam String roleName) {
         // Logic to fetch client data based on the clientId
         if ((clientTeamMember == null || clientTeamMember.isEmpty()) && (roleName == null || roleName.isEmpty())) {
             throw new ClientNotFoundException("Not found");
         }
         System.out.println("Fetching clients for client team member name: " + clientTeamMember + " and role name: " + roleName);
-        List<ClientTeamProjection> clientDetailsByClientTeamMember = clientDetailsService.getClientDetailsByClientTeamMemberNameAndRoleName(clientTeamMember, roleName);
+        List<ClientTeamProjectionDto> clientDetailsByClientTeamMember = clientDetailsService.getClientDetailsByClientTeamMemberNameAndRoleName(clientTeamMember, roleName);
         return ResponseEntity.ok(clientDetailsByClientTeamMember);
     }
 
