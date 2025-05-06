@@ -44,20 +44,20 @@ public class ProcessController {
     }
 
     // Method to download a file
-    @GetMapping(path = "/download",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<byte[]> downloadFile() {
 
         byte[] fileContent = fileService.downloadFile();
 
-        if(fileContent == null) {
+        if (fileContent == null) {
             return ResponseEntity.badRequest().body(null); // Return 404 if file not found
         }
 
         // Set headers for the file download
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=generated-file.txt"); // Set the filename
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE); // Use generic binary type
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=response.xlsx"); // Set the filename
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
         // Return file content as the body of the response
         return ResponseEntity.ok()
