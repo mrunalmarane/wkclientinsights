@@ -5,7 +5,10 @@ import com.client.insights.service.ClientDetailsService;
 import com.client.insights.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -44,24 +47,16 @@ public class ProcessController {
     }
 
     // Method to download a file
-    @GetMapping(path = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(path = "/download", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<byte[]> downloadFile() {
-
-        byte[] fileContent = fileService.downloadFile();
-
-        if (fileContent == null) {
-            return ResponseEntity.badRequest().body(null); // Return 404 if file not found
+    public ResponseEntity<Resource>  downloadFile() {
+        try {
+            Resource resource = new ClassPathResource("response.xlsx");
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=response.xlsx");
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        // Set headers for the file download
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=response.xlsx"); // Set the filename
-        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-
-        // Return file content as the body of the response
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(fileContent);
     }
 }
