@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "cpm_contact", schema = "cpm")
-@Where(clause = "tenantId = '6660c87c-3b88-4e81-aa51-1c3b01b03842'")
 public class CpmContact {
     @Id
     @Column(name = "rowid")
