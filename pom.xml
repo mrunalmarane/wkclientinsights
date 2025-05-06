@@ -13,7 +13,6 @@
     <version>1.0.0</version>
     <name>insights</name>
     <description>insights</description>
-    <packaging>war</packaging>
     <url/>
     <licenses>
         <license/>
