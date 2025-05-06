@@ -41,16 +41,16 @@ public class ClientController {
         return clientDetailsService.getClientDetailsByContactCode(contactCode);
     }
 
-    @Operation(summary = "Fetch client data and all related data by client ID")
+    @Operation(summary = "Fetch client data and all related data by contact Code")
     @GetMapping (value = "/clientDetailedDataById")
-    public ClientAllDetailsResponse getClientDetailedDataById(@RequestParam String clientId) {
+    public ClientAllDetailsResponse getClientDetailedDataByContactCode(@RequestParam String contactCode) {
         // Logic to fetch client data based on the clientId
         try {
-            if (clientId == null || clientId.isEmpty()) {
+            if (contactCode == null || contactCode.isEmpty()) {
                 throw new ClientNotFoundException("Client ID not found");
             }
-            System.out.println("Fetching data for client ID and also all related data for that client: " + clientId);
-            return clientDetailsService.getDetailsForClient(clientId);
+            System.out.println("Fetching data for client ID and also all related data for that client: " + contactCode);
+            return clientDetailsService.getDetailsForClient(contactCode);
         } catch (Exception e){
             System.out.println("Error occurred while fetching client data: " + e.getMessage());
             logger.error(e.getMessage());
