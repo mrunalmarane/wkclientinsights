@@ -311,10 +311,11 @@ public class FileService {
     }
 
     public void writeCsvToExcel(String csv) throws IOException {
+        System.out.println("Excel file writing in process.");
         String[] lines = csv.split("\n");
 
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("CSV Data");
+        Sheet sheet = workbook.createSheet("Client Data");
 
         for (int i = 0; i < lines.length; i++) {
             Row row = sheet.createRow(i);

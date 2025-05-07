@@ -55,10 +55,30 @@ public class FABService {
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("x-authentication", apiKey);
+        connection.setRequestProperty("x-user-id", "test-user");
         connection.setDoOutput(true);
 
         // JSON payload
-        String jsonInputString = "{\"input\":{\"query\":\"" + prompt + "\"}}";
+        String jsonInputString = "{\n" +
+                "    \"input\": {\n" +
+                "        \"persistent\": false,\n" +
+                "        \"conversationId\": \"0d69a7a9-08cb-4d3b-b736-d6679f1c3646\",\n" +
+                "        \"expyId\": \"agents-playground-test\",\n" +
+                "        \"source\": \"agents-playground\",\n" +
+                "        \"messages\": [\n" +
+                "            {\n" +
+                "                \"role\": \"user\",\n" +
+                "                \"payload\": {\n" +
+                "                    \"content\": \"" + prompt + "\"\n" +
+                "                },\n" +
+                "                \"context\": {\n" +
+                "                    \"selectedDocuments\": [],\n" +
+                "                    \"hiddenFilters\": {}\n" +
+                "                }\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    }\n" +
+                "}";
 
         // Write the JSON payload to the request body
         try (OutputStream os = connection.getOutputStream()) {
