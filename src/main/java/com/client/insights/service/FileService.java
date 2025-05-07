@@ -325,6 +325,8 @@ public class FileService {
             }
         }
 
+         String writableDir = "/home/site/wwwroot";
+        String excelFilePath = writableDir + "/response.xlsx";
         // Delete the file if it already exists
         File file = new File(excelFilePath);
         if (file.exists()) {
