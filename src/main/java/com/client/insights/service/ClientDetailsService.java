@@ -77,7 +77,7 @@ public class ClientDetailsService {
     public static final UUID AKTE = UUID.fromString("b95e5aa6-8d2f-4225-8b47-b2cd03f0ed91");
 
     public void execute(String prompt) {
-        StringBuilder aiResponse = new StringBuilder("");//fabService.execute(prompt);
+        StringBuilder aiResponse = fabService.execute(prompt);
         if (aiResponse != null) {
             // Process the response as needed
             ObjectMapper objectMapper = new ObjectMapper();
