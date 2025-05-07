@@ -324,6 +324,12 @@ public class FileService {
             }
         }
 
+        // Delete the file if it already exists
+        File file = new File(excelFilePath);
+        if (file.exists()) {
+            file.delete();
+        }
+
         try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
             workbook.write(fos);
         }
