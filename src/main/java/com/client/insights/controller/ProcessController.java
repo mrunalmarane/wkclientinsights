@@ -1,5 +1,5 @@
 package com.client.insights.controller;
-
+import org.springframework.core.io.FileSystemResource;
 import com.client.insights.FABService;
 import com.client.insights.service.ClientDetailsService;
 import com.client.insights.service.FileService;
@@ -62,13 +62,25 @@ public class ProcessController {
     }
 
     // Method to download a file
-    @GetMapping(path = "/download", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<Resource>  downloadFile() {
+    public ResponseEntity<Resource> downloadFile() {
         try {
-            Resource resource = new ClassPathResource("response.xlsx");
+            // Path to the file in the writable directory
+            String filePath = "/home/site/wwwroot/response.xlsx";
+            File file = new File(filePath);
+
+            if (!file.exists()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            // Load the file as a resource
+            Resource resource = new FileSystemResource(file);
+
+            // Set headers for file download
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=response.xlsx");
+
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
