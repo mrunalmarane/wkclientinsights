@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import java.io.ByteArrayOutputStream;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -310,8 +311,7 @@ public class FileService {
         }
     }
 
-    public void writeCsvToExcel(String csv) throws IOException {
-        System.out.println("Excel file writing in process.");
+    public byte[] writeCsvToExcel(String csv) throws IOException {
         String[] lines = csv.split("\n");
 
         Workbook workbook = new XSSFWorkbook();
@@ -325,18 +325,36 @@ public class FileService {
             }
         }
 
-        // Delete the file if it already exists
-        File file = new File(excelFilePath);
-        if (file.exists()) {
-            file.delete();
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            workbook.write(bos);
+            System.out.println("Excel file written successfully.");
+            return bos.toByteArray(); // Return the generated file as a byte array
+        } finally {
+            workbook.close();
         }
+    }
 
-        try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
-            workbook.write(fos);
+    public byte[] createNoDataExcel() {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("No Data");
+
+        // Add a message in the first cell
+        Row row = sheet.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellValue("No data found");
+
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            workbook.write(bos);
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Error creating Excel file", e);
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        workbook.close();
-        System.out.println("Excel file written successfully.");
     }
 
 }

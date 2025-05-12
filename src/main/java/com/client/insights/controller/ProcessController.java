@@ -39,11 +39,26 @@ public class ProcessController {
     // Method to handle the prompt
     @PostMapping(path = "/prompt",  produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin(origins = "http://localhost:4200")
-    public ResponseEntity<String> handlePrompt(@RequestBody Map<String, String> request) {
+    public ResponseEntity<byte[]> handlePrompt(@RequestBody Map<String, String> request) {
         String prompt = request.get("prompt");
-        // Process the prompt
-        clientDetailsService.execute(prompt); // Call the execute method with the prompt
-        return ResponseEntity.ok("Response to: " + prompt);
+
+        try {
+            byte[] fileContent = clientDetailsService.execute(prompt);
+
+            if (fileContent == null) {
+                return ResponseEntity.badRequest().body(null);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=response.xlsx");
+            headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(fileContent);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     // Method to download a file

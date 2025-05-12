@@ -25,8 +25,14 @@ import com.client.insights.response.ClientAllDetailsResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.io.ByteArrayOutputStream;
 
 import java.io.IOException;
 import java.util.List;
@@ -76,7 +82,8 @@ public class ClientDetailsService {
     public static final UUID ADDISON = UUID.fromString("5aefeb06-bcb2-43b3-9c79-c4f14588e02e");
     public static final UUID AKTE = UUID.fromString("b95e5aa6-8d2f-4225-8b47-b2cd03f0ed91");
 
-    public void execute(String prompt) {
+    public byte[] execute(String prompt) {
+        System.out.println("Executing with prompt: " + prompt);
         StringBuilder aiResponse = fabService.execute(prompt);
         if (aiResponse != null) {
             // Process the response as needed
@@ -90,16 +97,18 @@ public class ClientDetailsService {
 
             String content = rootNode.path("output").path("payload").path("content").asText();
 
+            // Get CSV from output
             String csv = extractCsvFromJson(content);
+            // 3. Write to Excel
             try {
-                fileService.writeCsvToExcel(csv);
+                return fileService.writeCsvToExcel(csv);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Error generating Excel file", e);
             }
-
 
         } else {
             System.out.println("Failed to fetch API response.");
+            return fileService.createNoDataExcel();
         }
     }
 
