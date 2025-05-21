@@ -1,4 +1,4 @@
-package com.client.insights;
+package com.client.insights.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

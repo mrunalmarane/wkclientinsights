@@ -1,6 +1,5 @@
 package com.client.insights.service;
 
-import com.client.insights.FABService;
 import com.client.insights.dto.ApplicationConnectionDto;
 import com.client.insights.dto.ClientTeamProjectionDto;
 import com.client.insights.dto.ContactProjectionDto;
@@ -32,10 +31,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.io.ByteArrayOutputStream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,7 +83,7 @@ public class ClientDetailsService {
     public static final UUID ADDISON = UUID.fromString("5aefeb06-bcb2-43b3-9c79-c4f14588e02e");
     public static final UUID AKTE = UUID.fromString("b95e5aa6-8d2f-4225-8b47-b2cd03f0ed91");
 
-    public byte[] execute(String prompt) {
+    public byte[] execute(String prompt) throws JsonProcessingException {
         System.out.println("Executing with prompt: " + prompt);
         StringBuilder aiResponse = fabService.execute(prompt);
         if (aiResponse != null) {
@@ -97,11 +98,9 @@ public class ClientDetailsService {
 
             String content = rootNode.path("output").path("payload").path("content").asText();
 
-            // Get CSV from output
-            String csv = extractCsvFromJson(content);
-            // 3. Write to Excel
+            Map<String, String> allCsv = extractCsvFromJson(content);
             try {
-                return fileService.writeCsvToExcel(csv);
+                return fileService.writeCsvToExcelMultipleSheets(allCsv);
             } catch (IOException e) {
                 throw new RuntimeException("Error generating Excel file", e);
             }
@@ -112,8 +111,22 @@ public class ClientDetailsService {
         }
     }
 
-    private static String extractCsvFromJson(String json) {
-        return json.replaceAll("\\\\n", "\n").replaceAll("\\\\\"", "\"").trim();
+    private static Map<String, String> extractCsvFromJson(String json) {
+        Map<String, String> allCsv = new HashMap<>();
+        String[] parts;
+        if (json.contains("|")) {
+            parts = json.split("\\|");
+            for (String part : parts) {
+                String[] internalParts = part.split("::");
+                String sheetName = internalParts[0];
+                allCsv.put(sheetName, internalParts[1].replaceAll("\\\\n", "\n").replaceAll("\\\\\"", "\"").trim());
+            }
+            return allCsv;
+        }
+
+        allCsv.put("Client Data", json.replaceAll("\\\\n", "\n").replaceAll("\\\\\"", "\"").trim());
+
+        return allCsv;
     }
 
     public List<CpmContactDto> getClientDetailsByContactCode(String contactCode) {
@@ -158,7 +171,6 @@ public class ClientDetailsService {
                 app.setContactCode(contact.getContactCode());
             });
         });
-
         return appConnectionDtoMapper.toDtoList(connectedApplicationList);
     }
 
